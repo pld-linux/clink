@@ -10,7 +10,7 @@ Patch0:		ftp://ftp.6bone.pl/pub/ipv6/set-glibc-2.1.new/%{name}.1.0a.diff
 URL:		http://rocky.wellesley.edu/downey/clink/
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%description 
+%description
 clink (Characterize Links) is a utility that estimates the latency and
 bandwidth of network links by sending UDP packets from a single source
 and measuring round-trip times. The basic mechanism is similar to ping
@@ -38,7 +38,7 @@ install clink $RPM_BUILD_ROOT%{_bindir}/clink
 mv -f clink.doc clink.txt
 
 gzip -9nf clink.txt
-	
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
