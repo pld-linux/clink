@@ -37,12 +37,10 @@ install clink $RPM_BUILD_ROOT%{_bindir}/clink
 
 mv -f clink.doc clink.txt
 
-gzip -9nf clink.txt
-
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc *.gz
+%doc clink.txt
 %attr(755,root,root) %{_bindir}/clink
