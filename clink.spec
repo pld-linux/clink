@@ -2,12 +2,13 @@ Summary:	Clink estimates the latency and bandwidth of network links
 Summary(pl):	Clink okre¶la przybli¿one opó¼nienie i pasmo po³±czenia sieciowego
 Name:		clink
 Version:	1.0
-Release:	2
+Release:	3
 License:	GPL
 Group:		Applications/Networking
 Group(de):	Applikationen/Netzwerkwesen
 Group(pl):	Aplikacje/Sieciowe
 Source0:	http://rocky.wellesley.edu/downey/clink/%{name}.%{version}.tar.gz
+Patch0:		ftp://ftp.6bone.pl/pub/ipv6/set-glibc-2.1.new/%{name}.1.0a.diff
 URL:		http://rocky.wellesley.edu/downey/clink/
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -25,9 +26,10 @@ z pojedynczego ¼ród³a.
 
 %prep
 %setup -q -n %{name}.%{version}
+%patch0 -p1
 %build
 
-%{__make}
+%{__make} CFLAGS="%{rpmcflags} -D_GNU_SOURCE"
 
 %install
 rm -rf $RPM_BUILD_ROOT
