@@ -6,6 +6,7 @@ Release:	3
 License:	GPL
 Group:		Applications/Networking
 Source0:	http://rocky.wellesley.edu/research/clink/%{name}.%{version}.tar.gz
+# Source0-md5:	9bfb957d7733e434a5e902dccad89c56
 Patch0:		ftp://ftp.6bone.pl/pub/ipv6/set-glibc-2.1.new/%{name}.1.0a.diff
 URL:		http://rocky.wellesley.edu/research/clink/
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
