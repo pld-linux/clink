@@ -1,0 +1,127 @@
+Only in clink.1.0a: .collect.c.swp
+Only in clink.1.0a: clink
+diff -ru clink.1.0/collect.c clink.1.0a/collect.c
+--- clink.1.0/collect.c	Sat Aug 14 22:47:04 1999
++++ clink.1.0a/collect.c	Sat Jun 24 16:50:19 2000
+@@ -95,13 +95,22 @@
+      the header of the packet that caused the error */
+ 
+   hip = (struct ip *) (recvbuf + hlen1 + 8);
+-  if (hip->ip_p != IPPROTO_UDP) return 0;
++  if (hip->ip_p != IPPROTO_UDP) {
++    if (verbose) printf("Wrong protocol %d != %d\n", hip->ip_p, IPPROTO_UDP);
++    return 0;
++  }
+ 
+   hlen2 = hip->ip_hl << 2;
+   udp = (struct udphdr *) (recvbuf + hlen1 + 8 + hlen2);
+ 
+-  if (udp->source != htons (sport)) return 0;
+-  if (udp->dest != htons (dport)) return 0;
++  if (udp->source != htons (sport)) {
++    if (verbose) printf("Wrong source port %d != %d\n", ntohs(udp->source), (sport));
++    return 0;
++  }
++  if (udp->dest != htons (dport)) {
++    if (verbose) printf("Wrong destination port %d != %d\n", ntohs(udp->dest), (dport));
++    return 0;
++  }
+ 
+   /* now we know it's an ICMP packet caused by a UDP
+      datagram sent by us and sent to the port we happen to
+@@ -118,7 +127,7 @@
+   }
+ 
+   if (icmp->icmp_type == ICMP_DEST_UNREACH) {
+-    if (icmp->icmp_code == ICMP_PORT_UNREACH) {
++    if ( (icmp->icmp_code == ICMP_PORT_UNREACH) || (icmp->icmp_code == ICMP_PKT_FILTERED) ) {
+       return -1;
+     } else {
+       return 0;
+@@ -344,7 +353,7 @@
+    fill in the timestamps.  I am assuming that they don't have
+    any actual effect.  */
+ 
+-void clink_init (char *host, int tos)
++void clink_init (char *host, int sport0, int tos)
+ {
+   int n;
+   struct addrinfo *ai = NULL;
+@@ -403,6 +412,8 @@
+ 
+   sabind->sa_family = sasend->sa_family;
+   sport = (getpid() & 0xffff) | 0x8000;       /* source UDP port # */
++if (sport>=61000) sport -= 10000;
++  if (sport0>0) sport = sport0;
+   sock_set_port (sabind, salen, htons(sport));
+   Bind (sendfd, sabind, salen);
+ 
+Only in clink.1.0a: collect.o
+diff -ru clink.1.0/process.c clink.1.0a/process.c
+--- clink.1.0/process.c	Sat Aug 14 22:47:04 1999
++++ clink.1.0a/process.c	Thu Jun 22 19:21:52 2000
+@@ -21,6 +21,8 @@
+ int wait_time = 2;           /* how many seconds to wait before timeout */
+ int dns_resolve = 1;         /* flag: should we use DNS to resolve addrs? */
+ int verbose = 0;             /* flag: should we print verbose output */
++int quiet = 0;		     /* flag: no messages for each packet */
++int sport0 = 0;		     /* source port */
+ /* how long should we wait between probes */
+ double inter_sample_ratio = 10.0;   /* a multiple of the previous rtt? */
+ double inter_sample_time = 0.0;     /* or a fixed interval in microsecs */
+@@ -1073,11 +1075,15 @@
+     printf ("ttl=%d\t%s\tsize= %4d B\trtt= %.3lf ms\n",
+ 	      ttl, Sock_ntop_host (datum->addr, salen), size, datum->rtt);
+   } else {
+-    printf ("                                                        \r");
+-    printf ("n=%5d\t%s\tsize= %4d B\trtt= %.3lf ms\r",
+-       probe_count, Sock_ntop_host (datum->addr, salen), size, datum->rtt);
++    if (!quiet) {
++      printf ("                                                        \r");
++      printf ("n=%5d\t%s\tsize= %4d B\trtt= %.3lf ms\r",
++         probe_count, Sock_ntop_host (datum->addr, salen), size, datum->rtt);
++    }
++  }
++  if (!quiet) {
++    fflush(stdout);
+   }
+-  fflush(stdout);
+ 
+   add_datum (ttl, size, datum);
+ 
+@@ -1282,7 +1288,7 @@
+     tos = IPTOS_LOWDELAY | IPTOS_THROUGHPUT | IPTOS_MINCOST;
+   }
+ 
+-  clink_init (host, tos);
++  clink_init (host, sport0, tos);
+ 
+   sizes = make_sizes (low, high, step);
+ 
+@@ -1325,7 +1331,7 @@
+   int i, c;
+ 
+   opterr = 0;
+-  while ( (c = getopt (argc, argv, "knvMD:I:f:h:i:l:m:q:r:s:t:w:")) != -1) {
++  while ( (c = getopt (argc, argv, "knvMD:I:f:h:i:l:m:p:q:Qr:s:t:w:")) != -1) {
+     switch (c) {
+     case 'k':
+       kernel_timestamps = 1;
+@@ -1396,6 +1402,15 @@
+     case 'q':
+       if ( (num_probes = atoi(optarg)) < 2) {
+ 	err_quit ("invalid -q value (num_probes); must be at least 2");
++      }
++      break;
++    case 'Q':
++      quiet = 1;
++      break;
++    case 'p':
++      sport0 = atoi(optarg);
++      if ( (sport0<= 0) || (sport0>=65536) ) {
++        err_quit ("invalid -p (source port); must be in 1..65535 range");
+       }
+       break;
+     case 'w':
+Only in clink.1.0a: process.o
+Only in clink.1.0a: util.o
