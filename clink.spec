@@ -1,8 +1,8 @@
 Summary:	Clink estimates the latency and bandwidth of network links
-Summary(pl):	Clink okre¶la przybli¿one opó¼nienie i pasmo po³aczenia sieciowego
+Summary(pl):	Clink okre¶la przybli¿one opó¼nienie i pasmo po³±czenia sieciowego
 Name:		clink
 Version:	1.0
-Release:	1
+Release:	2
 License:	GPL
 Group:		Applications/Networking
 Group(de):	Applikationen/Netzwerkwesen
