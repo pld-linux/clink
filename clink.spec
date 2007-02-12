@@ -1,5 +1,5 @@
 Summary:	Clink estimates the latency and bandwidth of network links
-Summary(pl.UTF-8):   Clink określa przybliżone opóźnienie i pasmo połączenia sieciowego
+Summary(pl.UTF-8):	Clink określa przybliżone opóźnienie i pasmo połączenia sieciowego
 Name:		clink
 Version:	1.0
 Release:	5
