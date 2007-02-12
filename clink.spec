@@ -1,5 +1,5 @@
 Summary:	Clink estimates the latency and bandwidth of network links
-Summary(pl):	Clink okre秎a przybli縪ne op蠹nienie i pasmo po潮czenia sieciowego
+Summary(pl.UTF-8):   Clink okre艣la przybli偶one op贸藕nienie i pasmo po艂膮czenia sieciowego
 Name:		clink
 Version:	1.0
 Release:	5
@@ -18,10 +18,10 @@ and measuring round-trip times. The basic mechanism is similar to ping
 and traceroute, except that clink generally has to send many more
 packets.
 
-%description -l pl
-clink (Characterize Links) jest narz阣ziem, kt髍e okre秎a op蠹nienie i
-pasmo (przepustowo舵) 潮cz w sieci przy u縴ciu pakiet體 UDP wysy砤nych
-z pojedynczego 紃骴砤.
+%description -l pl.UTF-8
+clink (Characterize Links) jest narz臋dziem, kt贸re okre艣la op贸藕nienie i
+pasmo (przepustowo艣膰) 艂膮cz w sieci przy u偶yciu pakiet贸w UDP wysy艂anych
+z pojedynczego 藕r贸d艂a.
 
 %prep
 %setup -q -n %{name}.%{version}
