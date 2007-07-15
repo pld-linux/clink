@@ -3,7 +3,7 @@ Summary(pl.UTF-8):	Clink określa przybliżone opóźnienie i pasmo połączenia
 Name:		clink
 Version:	1.0
 Release:	5
-License:	GPL
+License:	GPL v2+
 Group:		Applications/Networking
 Source0:	http://allendowney.com/research/clink/%{name}.%{version}.tar.gz
 # Source0-md5:	9bfb957d7733e434a5e902dccad89c56
@@ -30,6 +30,7 @@ z pojedynczego źródła.
 
 %build
 %{__make} \
+	CC="%{__cc}" \
 	CFLAGS="%{rpmcflags} -D_GNU_SOURCE"
 
 %install
@@ -45,5 +46,5 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc clink.txt
+%doc COPYRIGHT clink.txt
 %attr(755,root,root) %{_bindir}/clink
